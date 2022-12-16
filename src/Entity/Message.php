@@ -74,4 +74,7 @@ class Message
 
         return $this;
     }
+    public function __toString(){
+        return $this->text." écrit par ". $this->getUser();
+    }
 }

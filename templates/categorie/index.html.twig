@@ -3,7 +3,10 @@
 {% block title %}Acceuil{% endblock %}
 
 {% block body %}
-{% for categorie in categories %}
-    {{categorie}}</br>
-{% endfor %}
+    <h2>Catégories({{ categories.getTotalItemCount }})</h2>
+    {% for categorie in categories %}
+    <a href="{{ path('app_sujet', {'id': categorie.id}) }}">{{categorie}}</a></br>
+    {% endfor %}
+
+    {{ knp_pagination_render(categories) }}
 {% endblock %}

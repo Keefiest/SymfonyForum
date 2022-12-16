@@ -2,19 +2,31 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Sujet;
+use App\Entity\Message;
+use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MessageController extends AbstractController
 {
     /**
-     * @Route("/message", name="app_message")
+     * @Route("/message/{id}", name="app_message")
      */
-    public function index(): Response
+    public function index(Sujet $sujet, ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response
     {
+        $messages = $sujet->getMessages();
+        $messages = $paginator->paginate(
+            $messages, /* query NOT result */
+            $request->query->getInt('page', 1)/*page number*/,
+            5/*limit per page*/
+        );
         return $this->render('message/index.html.twig', [
-            'controller_name' => 'MessageController',
-        ]);
+            'sujet' => $sujet,
+            'messages' => $messages
+        ]); 
     }
 }
