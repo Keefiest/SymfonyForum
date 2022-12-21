@@ -4,6 +4,9 @@
 
 {% block body %}
     <h2>Sujet de la catégorie {{categorie}}</h2>
+    <a href="{{path('add_sujet', {'idCategorie': categorie.id})}}">
+        <h4>Ajouter un sujet</h4>
+    </a>
     {% for sujet in sujets %}
         <a href="{{path('app_message', {'id': sujet.id})}}">{{sujet}}</a></br>    
     {% endfor %}
