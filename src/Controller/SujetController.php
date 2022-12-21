@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\Sujet;
 use App\Form\SujetType;
 use App\Entity\Categorie;
@@ -47,7 +48,47 @@ class SujetController extends AbstractController
             // insert into (execute)
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_sujet');
+            return $this->redirectToRoute('app_sujet', ['id' => $categorie->getId()]);
+
+        }
+
+        // vue pour afficher le formulaire d'ajout
+        return $this->render('sujet/add.html.twig', [
+            'formAddSujet' => $form->createView(),
+        ]);
+
+    }
+    /**
+     * @Route("/sujet/{id}/edit", name="edit_sujet")
+     * @ParamConverter("sujet", options = {"mapping": {"id": "id"}})
+     */    
+    public function edit(ManagerRegistry $doctrine, Sujet $sujet = null, Request $request, Categorie $categorie, Security $security): Response
+    {
+        if(!$sujet){
+            $sujet = new Sujet();
+        }
+
+        $form = $this->createForm(SujetType::class, $sujet);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            // on récup l'utilisateur en session et on l'ajoute au sujet
+            $user = $security->getUser();
+            $sujet->setUSer($user);
+            // on défini une variable DateTime actuel, et on l'ajoute au sujet
+            $dateTopic = new DateTime;
+            $sujet->setDateCreation($dateTopic);
+            // on set la catégorie dans la route
+            $sujet->setCategorie($categorie);
+        
+            $sujet = $form->getData();
+            $entityManager = $doctrine->getManager();
+            // prepare
+            $entityManager->persist($sujet);
+            // insert into (execute)
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_sujet', ['id' => $categorie->getId()]);
 
         }
 
@@ -57,6 +98,17 @@ class SujetController extends AbstractController
             'edit' => $sujet->getId()
         ]);
 
+    }
+
+    /**
+     * @Route("/sujet/{id}/delete", name="delete_sujet")
+     */
+    public function delete(ManagerRegistry $doctrine, Sujet $sujet){
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->remove($stagiaire);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_sujet', ["id" => $sujet->getCategorie()->getSujet()]);
     }
 
     /**
