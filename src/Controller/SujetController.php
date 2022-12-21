@@ -19,7 +19,6 @@ class SujetController extends AbstractController
 {
     /**
      * @Route("/sujet/add/{idCategorie}", name="add_sujet")
-     * @Route("/sujet/{id}/edit", name="edit_sujet")
      * @ParamConverter("categorie", options = {"mapping": {"idCategorie": "id"}})
      */    
     public function add(ManagerRegistry $doctrine, Sujet $sujet = null, Request $request, Categorie $categorie, Security $security): Response
@@ -59,10 +58,10 @@ class SujetController extends AbstractController
 
     }
     /**
-     * @Route("/sujet/{id}/edit", name="edit_sujet")
-     * @ParamConverter("sujet", options = {"mapping": {"id": "id"}})
+     * @Route("/sujet/edit/{idSujet}", name="edit_sujet")
+     * @ParamConverter("sujet", options = {"mapping": {"idSujet": "id"}})
      */    
-    public function edit(ManagerRegistry $doctrine, Sujet $sujet = null, Request $request, Categorie $categorie, Security $security): Response
+    public function edit(ManagerRegistry $doctrine, Sujet $sujet = null, Request $request, Security $security): Response
     {
         if(!$sujet){
             $sujet = new Sujet();
@@ -75,12 +74,7 @@ class SujetController extends AbstractController
             // on récup l'utilisateur en session et on l'ajoute au sujet
             $user = $security->getUser();
             $sujet->setUSer($user);
-            // on défini une variable DateTime actuel, et on l'ajoute au sujet
-            $dateTopic = new DateTime;
-            $sujet->setDateCreation($dateTopic);
-            // on set la catégorie dans la route
-            $sujet->setCategorie($categorie);
-        
+
             $sujet = $form->getData();
             $entityManager = $doctrine->getManager();
             // prepare
@@ -88,7 +82,7 @@ class SujetController extends AbstractController
             // insert into (execute)
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_sujet', ['id' => $categorie->getId()]);
+            return $this->redirectToRoute('app_sujet', ['id' => $sujet->getCategorie()->getId()]);
 
         }
 
