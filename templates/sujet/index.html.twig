@@ -8,7 +8,9 @@
         <h4>Ajouter un sujet</h4>
     </a>
     {% for sujet in sujets %}
-        <a href="{{path('app_message', {'id': sujet.id})}}">{{sujet}}</a> <a href="{{ path('edit_sujet', {"idSujet": sujet.id}) }}">edit</a></br>    
+        <a href="{{path('app_message', {'id': sujet.id})}}">{{sujet}}</a> 
+        <a href="{{ path('edit_sujet', {"idSujet": sujet.id}) }}"><i class="fa-solid fa-pen-to-square"></i></a>
+    </br>    
     {% endfor %}
     {{ knp_pagination_render(sujets) }}
 {% endblock %}
