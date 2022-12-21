@@ -95,14 +95,15 @@ class SujetController extends AbstractController
     }
 
     /**
-     * @Route("/sujet/{id}/delete", name="delete_sujet")
+     * @Route("/sujet/delete/{idSujet}", name="delete_sujet")
+     * @ParamConverter("sujet", options = {"mapping": {"idSujet": "id"}})
      */
     public function delete(ManagerRegistry $doctrine, Sujet $sujet){
 
         $entityManager = $doctrine->getManager();
-        $entityManager->remove($stagiaire);
+        $entityManager->remove($sujet);
         $entityManager->flush();
-        return $this->redirectToRoute('app_sujet', ["id" => $sujet->getCategorie()->getSujet()]);
+        return $this->redirectToRoute('app_sujet', ['id' => $sujet->getCategorie()->getId()]);
     }
 
     /**

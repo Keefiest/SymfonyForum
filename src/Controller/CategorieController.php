@@ -49,6 +49,17 @@ class CategorieController extends AbstractController
 
     }
     /**
+     * @Route("/categorie/delete/{id}", name="delete_categorie")
+     */
+    public function delete(ManagerRegistry $doctrine, Categorie $categorie){
+
+        $entityManager = $doctrine->getManager();
+        $entityManager->remove($categorie);
+        $entityManager->flush();
+        return $this->redirectToRoute('app_categorie');
+    }
+
+    /**
      * @Route("/categorie", name="app_categorie")
      */
     public function index(ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response
